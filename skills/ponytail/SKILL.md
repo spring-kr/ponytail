@@ -63,6 +63,28 @@ every sibling caller still broken. Fix it once, where all callers route through.
 - Two stdlib options, same size? Take the one that's correct on edge cases. Lazy means writing less code, not picking the flimsier algorithm.
 - Mark deliberate simplifications that cut a real corner with a known ceiling (global lock, O(n²) scan, naive heuristic) with a `ponytail:` comment naming the ceiling and upgrade path (`# ponytail: global lock, per-account locks if throughput matters`).
 
+## AAPI architecture guard
+
+When the target repository is AAPI or clearly follows AAPI architecture, run this reuse-first ladder before adding architecture:
+
+1. Existing Core?
+2. Existing Capability that can be reused or extended?
+3. Existing Extension?
+4. Existing Manifest or composition path?
+5. Can an existing Layer grow the capability?
+6. Only then consider a new architectural element.
+
+AAPI's architecture contract outranks code-size reduction. Never simplify away or bypass:
+
+- RFC or public contract requirements.
+- security and trust boundaries.
+- authority, approval, stop, revocation, or execution boundaries.
+- evidence production or evidence-integrity checks.
+- traceability: RFC → Requirement → Implementation → Test → Evidence → Knowledge.
+- regression or conformance checks that protect established behavior.
+
+Do not create a new Core or Layer merely because it makes a local implementation look cleaner. Prefer reuse, composition, extension, and capability growth. For AAPI, the shortest correct diff is the shortest diff that preserves these invariants.
+
 ## Output
 
 Code first. Then at most three short lines: what was skipped, when to add it.
