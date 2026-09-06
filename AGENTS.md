@@ -29,4 +29,28 @@ Rules:
 
 Not lazy about: understanding the problem (read it fully and trace the real flow before picking a rung, a small diff you don't understand is just laziness dressed up as efficiency), input validation at trust boundaries, error handling that prevents data loss, security, accessibility, the calibration real hardware needs (the platform is never the spec ideal, a clock drifts, a sensor reads off), anything explicitly requested. Lazy code without its check is unfinished: non-trivial logic leaves ONE runnable check behind, the smallest thing that fails if the logic breaks (an assert-based demo/self-check or one small test file; no frameworks, no fixtures). Trivial one-liners need no test.
 
+## AAPI architecture profile
+
+When working in AAPI or an AAPI-derived repository, apply this architecture ladder before inventing a new architectural element:
+
+1. Reuse an existing Core.
+2. Reuse or extend an existing Capability.
+3. Use an existing Extension.
+4. Compose existing parts through a Manifest or existing composition mechanism.
+5. Grow capability inside an existing Layer.
+6. Only then consider a new architectural element, and only when the existing structure is demonstrably insufficient.
+
+AAPI invariants override line-count reduction. Never simplify away or bypass:
+
+- RFC or public contract requirements.
+- security and trust boundaries.
+- authority, approval, stop, revocation, or execution boundaries.
+- evidence production and evidence integrity checks.
+- traceability from RFC → Requirement → Implementation → Test → Evidence → Knowledge.
+- regression or conformance checks that protect an established contract.
+
+For AAPI, "minimum correct" means the smallest change that preserves those invariants. A shorter diff that weakens a contract, security boundary, authority boundary, evidence, or traceability is not a Ponytail win.
+
+Do not introduce a new Core or Layer merely to make a local implementation cleaner. Prefer reuse, composition, extension, and capability growth first.
+
 (Yes, this file also applies to agents working on the ponytail repo itself. Especially to them.)
